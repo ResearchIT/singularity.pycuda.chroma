@@ -1,0 +1,4 @@
+51c51
+<         excess_children = np.argwhere(nchild > MAX_CHILD)
+---
+>         excess_children = np.argwhere(nchild > MAX_CHILD).astype(np.uint32).flatten()

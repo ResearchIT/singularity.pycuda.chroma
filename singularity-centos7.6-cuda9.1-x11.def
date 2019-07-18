@@ -1,0 +1,56 @@
+# Build a container with CentOS 7.6 with cuda-9.1 and X11-support
+# for installing legacy pycuda application chroma 
+# (https://chroma.bitbucket.io)
+
+
+Bootstrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/centos-%{OSVersion}/7.6.1810/os/x86_64/
+Include: yum
+
+%post
+
+yum install -y epel-release
+yum update  -y
+
+yum groupinstall -y  "Development tools" 
+yum install      -y  wget curl vi which cmake
+
+# package listed in https://chroma.bitbucket.io/install/rhel.html
+yum install -y uuid-devel lapack-devel atlas-devel
+yum install -y mercurial expat-devel bzip2-devel
+yum install -y SDL-devel gtk2-devel 
+yum install -y libXpm-devel freeglut-devel libXt-devel
+yum install -y git subversion, mesa-libGLU-devel 
+yum install -y libXft-devel libXext-devel libX11-devel 
+yum install -y libgomp
+yum install -y mesa-dri-drivers.i686  mesa-dri-drivers.x86_64 
+
+# for testing x-11 forward
+yum install -y xclock
+
+yum install -y python-devel 
+yum install -y python-pip
+
+yum update -y
+yum clean all
+
+# cuda versions on condo2017: cuda/8.0.61, cuda/9.1.85, cuda/9.2.88, cuda/10.0.130
+# Install the cuda-repo package, then search cuda-related packages. 
+# Select cuda-9.1.85-1.x86_64 to install
+# cuda-9.1 is installed in /usr/local/cuda-9.1, and /usr/local/cuda links to it.
+yum install -y http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-9.0.176-1.x86_64.rpm
+yum --showduplicates search cuda
+yum install -y cuda-9.1.85-1.x86_64
+
+
+# if run "yum update" after installing cuda9,  cuda and the link name /usr/local/cuda will be updated.
+# to avoid using the updated version of cuda, not use the cuda link name, but use the target directory cuda-9.1
+# Other env variables will be set after installing python packages.
+
+%environment
+
+export PATH=/usr/local/cuda-9.1/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-9.1/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=/usr/local/cuda-9.1
+
