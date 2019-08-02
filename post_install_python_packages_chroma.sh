@@ -85,9 +85,21 @@ hg clone https://bitbucket.org/chroma/chroma
 cd chroma
 python setup.py develop
 
+# grid.py.patch should be in /mnt as -B $PWD:/mnt.
+f_patch=""
+if test -f "/mnt/grid.py.patch"; then
+  f_patch="/mnt/grid.py.patch"
+elif test -f "$HOME/grid.py.patch"; then
+  f_patch="$HOME/grid.py.patch"
+fi
+
 # patch grid.py
-cd  $VIRTUAL_ENV/src/chroma/chroma/bvh
-patch grid.py $HOME/grid.py.patch
+if test -f "$f_patch"; then
+  cd  $VIRTUAL_ENV/src/chroma/chroma/bvh
+  echo "patch grid.py $f_patch"
+  patch grid.py $f_patch
+fi
+
 
 # Write all env in to /.singularity.d/env/999-rit.sh
 m_env_file=/.singularity.d/env/999-rit.sh
@@ -103,4 +115,4 @@ source /opt/chroma_env/bin/geant4.sh
 source /opt/chroma_env/env.d/root.sh
 source /opt/chroma_env/bin/activate
 EOT
-chmod a+x $m_env_file
+chmod a+xr $m_env_file
