@@ -2,12 +2,12 @@
 Build a CentOS7.6 singularity container for archving legacy pycuda application chroma
 (https://chroma.bitbucket.io/).
 
-###1. Build the container
+### 1. Build the container
 The script build_chroma_simg.sh will build a base singularity sandbox of CentOS7.6 with  cuda9.1 and x11, install the required python2.7 packages, and create a  singularity image from the sandbox.
 
 $ sudo sh ./build_chroma_simg.sh
 
-###2. Test
+### 2. Test
   We will run the simulation from a gpu node in a cluster.
 chroma will use ~/.chroma as a cache location, and has six models included for testing, which are Colbert_HighRes_Brow, companioncube, liberty, MiniFig, tie_interceptor6, and lionsolid.
 
